@@ -9,7 +9,6 @@ __all__ = [
     "GraphConstructionError",
     "OnnxExporterError",
     "OnnxExporterWarning",
-    "OnnxRuntimeError",
     "SymbolicValueError",
     "TorchExportError",
     "UnsupportedOperatorError",
@@ -45,10 +44,6 @@ class DispatchError(ConversionError):
 
 class GraphConstructionError(ConversionError):
     """Error during ONNX graph construction."""
-
-
-class OnnxRuntimeError(OnnxExporterError):
-    """Error during ONNX Runtime execution."""
 
 
 class UnsupportedOperatorError(OnnxExporterError):

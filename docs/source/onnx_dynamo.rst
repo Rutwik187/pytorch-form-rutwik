@@ -158,3 +158,5 @@ API Reference
 
 .. autoclass:: torch.onnx.DiagnosticOptions
     :members:
+
+.. automodule:: torch.onnx.errors
