@@ -38,16 +38,14 @@ __all__ = [
     "unregister_custom_op_symbolic",
     "disable_log",
     "enable_log",
-    # Errors
-    "CheckerError",  # Backwards compatibility
+    # Base error
+    "OnnxExporterError",
     # Dynamo Exporter
     "DiagnosticOptions",
     "ExportOptions",
     "ONNXProgram",
     "ONNXProgramSerializer",
     "ONNXRuntimeOptions",
-    "InvalidExportOptionsError",
-    "OnnxExporterError",
     "OnnxRegistry",
     "dynamo_export",
     "enable_fake_mode",
@@ -70,7 +68,7 @@ from ._internal.onnxruntime import (
     OrtExecutionProvider as _OrtExecutionProvider,
 )
 from ._type_utils import JitScalarType
-from .errors import CheckerError  # Backwards compatibility
+from .errors import OnnxExporterError
 from .utils import (
     _optimize_graph,
     _run_symbolic_function,
@@ -111,8 +109,6 @@ from ._internal._exporter_legacy import (  # usort: skip. needs to be last to av
     ONNXProgram,
     ONNXProgramSerializer,
     ONNXRuntimeOptions,
-    InvalidExportOptionsError,
-    OnnxExporterError,
     OnnxRegistry,
     dynamo_export,
     enable_fake_mode,
@@ -123,22 +119,21 @@ if TYPE_CHECKING:
     import os
 
 # Set namespace for exposed private names
+DiagnosticOptions.__module__ = "torch.onnx"
+ExportOptions.__module__ = "torch.onnx"
 ExportTypes.__module__ = "torch.onnx"
 JitScalarType.__module__ = "torch.onnx"
-ExportOptions.__module__ = "torch.onnx"
 ONNXProgram.__module__ = "torch.onnx"
 ONNXProgramSerializer.__module__ = "torch.onnx"
 ONNXRuntimeOptions.__module__ = "torch.onnx"
-dynamo_export.__module__ = "torch.onnx"
-InvalidExportOptionsError.__module__ = "torch.onnx"
 OnnxExporterError.__module__ = "torch.onnx"
-enable_fake_mode.__module__ = "torch.onnx"
 OnnxRegistry.__module__ = "torch.onnx"
-DiagnosticOptions.__module__ = "torch.onnx"
-is_onnxrt_backend_supported.__module__ = "torch.onnx"
-_OrtExecutionProvider.__module__ = "torch.onnx"
-_OrtBackendOptions.__module__ = "torch.onnx"
 _OrtBackend.__module__ = "torch.onnx"
+_OrtBackendOptions.__module__ = "torch.onnx"
+_OrtExecutionProvider.__module__ = "torch.onnx"
+dynamo_export.__module__ = "torch.onnx"
+enable_fake_mode.__module__ = "torch.onnx"
+is_onnxrt_backend_supported.__module__ = "torch.onnx"
 
 producer_name = "pytorch"
 producer_version = _C_onnx.PRODUCER_VERSION

@@ -544,34 +544,6 @@ class TestFxToOnnx(pytorch_test_common.ExportTestCase):
             onnx.checker.check_model(onnx_program.model_proto)
             onnx.shape_inference.infer_shapes(onnx_program.model_proto)
 
-    def test_exported_program_input_with_custom_fx_tracer(self):
-        from torch.onnx._internal import _exporter_legacy
-        from torch.onnx._internal.fx import dynamo_graph_extractor
-
-        class Model(torch.nn.Module):
-            def forward(self, x):
-                return x + 1
-
-        x = torch.randn(1, 1, 2)
-        exported_program = torch.export.export(Model(), args=(x,))
-
-        export_options = torch.onnx.ExportOptions()
-        export_options = _exporter_legacy.ResolvedExportOptions(
-            export_options, model=exported_program
-        )
-        export_options.fx_tracer = (
-            dynamo_graph_extractor.DynamoExport()
-        )  # Override fx_tracer to an unsupported tracer
-        with self.assertRaises(torch.onnx.OnnxExporterError):
-            onnx_program = torch.onnx.dynamo_export(
-                exported_program,
-                x,
-                export_options=export_options,
-            )
-            self.assertTrue(onnx_program._export_exception is not None)
-            with self.assertRaises(torch.onnx.InvalidExportOptionsError):
-                raise self._export_exception
-
     def test_exported_program_torch_distributions_normal_Normal(self):
         class Model(torch.nn.Module):
             def __init__(self) -> None:
