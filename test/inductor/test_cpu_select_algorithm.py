@@ -1,6 +1,7 @@
 # Owner(s): ["oncall: cpu inductor"]
 import contextlib
 import functools
+import logging
 import sys
 import unittest
 from typing import Optional
@@ -22,7 +23,15 @@ from torch.testing._internal.common_quantization import _generate_qdq_quantized_
 from torch.testing._internal.common_quantized import (
     _calculate_dynamic_per_channel_qparams,
 )
-from torch.testing._internal.common_utils import IS_MACOS, parametrize, TEST_MKL
+from torch.testing._internal.common_utils import (
+    IS_FBCODE,
+    IS_MACOS,
+    parametrize,
+    TEST_MKL,
+)
+
+
+log = logging.getLogger(__name__)
 
 
 try:
@@ -234,6 +243,17 @@ class TestSelectAlgorithm(BaseTestSelectAlgorithm):
 
             def forward(self, x):
                 return self.epilogue(self.linear(x))
+
+        if IS_FBCODE:
+            # TODO: debug utils, safe to remove in Oct 2024
+            log.warning(
+                f"DEBUG: torch.backends.mkl.is_available() is {torch.backends.mkl.is_available()}, "  # noqa: G004
+                f"torch.ops.mkldnn._is_mkldnn_fp16_supported() is {torch.ops.mkldnn._is_mkldnn_fp16_supported()}, "
+                f"torch.ops.mkldnn._is_mkldnn_bf16_supported() is {torch.ops.mkldnn._is_mkldnn_bf16_supported()}, "
+                f"inductor_config.freezing is {inductor_config.freezing}, "
+                f"mkldnn._is_mkldnn_acl_supported() is {torch.ops.mkldnn._is_mkldnn_acl_supported()}, "
+                f"torch._C.has_mkl is {torch._C.has_mkl}."
+            )
 
         counters.clear()
         v = torch.randn(batch_size, in_features).to(dtype=dtype)
